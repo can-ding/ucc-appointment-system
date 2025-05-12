@@ -6,8 +6,12 @@
 
   <form id="waitlistForm" class="mb-4">
     <div class="mb-3">
-      <label for="student_id" class="form-label">Student ID</label>
-      <input type="number" class="form-control" id="student_id" required>
+      <label for="student_name" class="form-label">Student Name</label>
+      <input type="text" class="form-control" id="student_name" required>
+    </div>
+    <div class="mb-3">
+      <label for="student_email" class="form-label">Student Email</label>
+      <input type="email" class="form-control" id="student_email" required>
     </div>
     <div class="mb-3">
       <label for="advisor_id" class="form-label">Advisor ID</label>
@@ -26,14 +30,15 @@
 <script>
   document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const student_id = document.getElementById('student_id').value;
+    const student_name = document.getElementById('student_name').value;
+    const student_email = document.getElementById('student_email').value;
     const advisor_id = document.getElementById('advisor_id').value;
     const desired_time = document.getElementById('desired_time').value;
 
     const response = await fetch('/waitlist/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id, advisor_id, desired_time })
+      body: JSON.stringify({ student_name, student_email, advisor_id, desired_time })
     });
 
     const result = await response.json();

@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template
 from app.extensions import db
 from app.models.waitlist import Waitlist
-from app.models.user import User
 from datetime import datetime
 
 waitlist_bp = Blueprint("waitlist", __name__, url_prefix="/waitlist")
@@ -10,11 +9,12 @@ waitlist_bp = Blueprint("waitlist", __name__, url_prefix="/waitlist")
 @waitlist_bp.route("/join", methods=["POST"])
 def join_waitlist():
     data = request.get_json()
-    student_id = data.get("student_id")
+    student_name = data.get("student_name")
+    student_email = data.get("student_email")
     advisor_id = data.get("advisor_id")
     time_str = data.get("desired_time")
 
-    if not all([student_id, advisor_id, time_str]):
+    if not all([student_name, student_email, advisor_id, time_str]):
         return jsonify({"error": "Missing required fields"}), 400
 
     try:
@@ -23,7 +23,8 @@ def join_waitlist():
         return jsonify({"error": "Invalid time format. Use YYYY-MM-DD HH:MM"}), 400
 
     new_wait = Waitlist(
-        student_id=student_id,
+        student_name=student_name,
+        student_email=student_email,
         advisor_id=advisor_id,
         desired_time=desired_time
     )
@@ -40,8 +41,9 @@ def view_waitlist():
     for entry in entries:
         data.append({
             "id": entry.id,
-            "student": User.query.get(entry.student_id).name,
-            "advisor": User.query.get(entry.advisor_id).name,
+            "student": entry.student_name,
+            "email": entry.student_email,
+            "advisor_id": entry.advisor_id,
             "time": entry.desired_time.strftime("%Y-%m-%d %H:%M"),
             "status": entry.status
         })
