@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Waitlist Demo{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Waitlist Simulation</h2>
+
+  <form id="waitlistForm" class="mb-4">
+    <div class="mb-3">
+      <label for="student_id" class="form-label">Student ID</label>
+      <input type="number" class="form-control" id="student_id" required>
+    </div>
+    <div class="mb-3">
+      <label for="advisor_id" class="form-label">Advisor ID</label>
+      <input type="number" class="form-control" id="advisor_id" required>
+    </div>
+    <div class="mb-3">
+      <label for="desired_time" class="form-label">Desired Time (YYYY-MM-DD HH:MM)</label>
+      <input type="text" class="form-control" id="desired_time" placeholder="2025-05-15 15:00" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Join Waitlist</button>
+  </form>
+
+  <div id="message"></div>
+</div>
+
+<script>
+  document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const student_id = document.getElementById('student_id').value;
+    const advisor_id = document.getElementById('advisor_id').value;
+    const desired_time = document.getElementById('desired_time').value;
+
+    const response = await fetch('/waitlist/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ student_id, advisor_id, desired_time })
+    });
+
+    const result = await response.json();
+    const msgDiv = document.getElementById('message');
+    msgDiv.innerHTML = `<div class="alert alert-${response.ok ? 'success' : 'danger'}">${result.message || result.error}</div>`;
+  });
+</script>
+{% endblock %}

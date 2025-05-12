@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template, make_response
 from app.extensions import db
 from app.models.appointment import Appointment
 from app.models.user import User
+from app.models.waitlist import Waitlist
 from datetime import datetime
-from flask import render_template, make_response
 import csv
 import io
 
@@ -14,7 +14,7 @@ def create_appointment():
     data = request.get_json()
     student_id = data.get('student_id')
     advisor_id = data.get('advisor_id')
-    time_str = data.get('time')  
+    time_str = data.get('time')
 
     if not all([student_id, advisor_id, time_str]):
         return jsonify({'error': 'Missing required fields'}), 400
@@ -43,6 +43,7 @@ def create_appointment():
         'message': 'Appointment created',
         'appointment_id': new_appointment.id
     }), 201
+
 @appointment_bp.route('', methods=['GET'])
 def get_appointments():
     appointments = Appointment.query.all()
@@ -58,12 +59,31 @@ def get_appointments():
         })
 
     return jsonify(results), 200
+
 @appointment_bp.route('/<int:appointment_id>', methods=['DELETE'])
 def delete_appointment(appointment_id):
     appointment = Appointment.query.get(appointment_id)
 
     if not appointment:
         return jsonify({'error': 'Appointment not found'}), 404
+
+    # Try to find a matching waitlist entry
+    match = Waitlist.query.filter_by(
+        advisor_id=appointment.advisor_id,
+        desired_time=appointment.time,
+        status='waiting'
+    ).order_by(Waitlist.created_at).first()
+
+    if match:
+        # Create a new appointment using waitlist student
+        new_appt = Appointment(
+            student_id=match.student_id,
+            advisor_id=match.advisor_id,
+            time=match.desired_time,
+            status='scheduled'
+        )
+        db.session.add(new_appt)
+        match.status = 'filled'
 
     db.session.delete(appointment)
     db.session.commit()

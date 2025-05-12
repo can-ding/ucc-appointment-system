@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Waitlist{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Waitlist Queue</h2>
+
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Advisor</th>
+        <th>Desired Time</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in waitlist %}
+      <tr>
+        <td>{{ entry.id }}</td>
+        <td>{{ entry.student }}</td>
+        <td>{{ entry.advisor }}</td>
+        <td>{{ entry.time }}</td>
+        <td>{{ entry.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
