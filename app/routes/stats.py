@@ -60,3 +60,40 @@ def render_monthly_chart():
     counts = [r[1] for r in results]
 
     return render_template('monthly_stats.html', months=months, counts=counts)
+@stats_bp.route('/dashboard')
+def dashboard():
+
+    from datetime import datetime
+    now = datetime.now()
+    current_month = now.strftime('%Y-%m')
+
+    monthly_data = db.session.query(
+        func.strftime('%Y-%m', Appointment.time).label('month'),
+        func.count(Appointment.id)
+    ).group_by('month').order_by('month').all()
+    months = [row[0] for row in monthly_data]
+    counts = [row[1] for row in monthly_data]
+
+    advisor_data = db.session.query(
+        User.name,
+        func.count(Appointment.id)
+    ).join(Appointment, Appointment.advisor_id == User.id)\
+     .group_by(User.id)\
+     .order_by(func.count(Appointment.id).desc())\
+     .limit(5).all()
+    advisor_names = [row[0] for row in advisor_data]
+    advisor_counts = [row[1] for row in advisor_data]
+
+    total_this_month = Appointment.query.filter(func.strftime('%Y-%m', Appointment.time) == current_month).count()
+    total_completed = Appointment.query.filter_by(status='completed').count()
+    total_noshow = Appointment.query.filter_by(status='no-show').count()
+
+    return render_template("dashboard.html",
+        months=months,
+        counts=counts,
+        advisor_names=advisor_names,
+        advisor_counts=advisor_counts,
+        total_this_month=total_this_month,
+        total_completed=total_completed,
+        total_noshow=total_noshow
+    )

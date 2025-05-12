@@ -66,3 +66,4 @@ def delete_appointment(appointment_id):
     db.session.commit()
 
     return jsonify({'message': f'Appointment {appointment_id} cancelled'}), 200
+
