@@ -3,6 +3,9 @@ from app.extensions import db
 from app.models.appointment import Appointment
 from app.models.user import User
 from datetime import datetime
+from flask import render_template, make_response
+import csv
+import io
 
 appointment_bp = Blueprint('appointment', __name__, url_prefix='/appointments')
 
@@ -67,3 +70,40 @@ def delete_appointment(appointment_id):
 
     return jsonify({'message': f'Appointment {appointment_id} cancelled'}), 200
 
+@appointment_bp.route('/view', methods=['GET'])
+def appointment_table():
+    appointments = Appointment.query.all()
+
+    data = []
+    for a in appointments:
+        data.append({
+            'id': a.id,
+            'student_name': User.query.get(a.student_id).name,
+            'advisor_name': User.query.get(a.advisor_id).name,
+            'time': a.time.strftime('%Y-%m-%d %H:%M'),
+            'status': a.status
+        })
+
+    return render_template('appointments_page.html', appointments=data)
+
+@appointment_bp.route('/export', methods=['GET'])
+def export_appointments_csv():
+    appointments = Appointment.query.all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['ID', 'Student', 'Advisor', 'Time', 'Status'])
+
+    for a in appointments:
+        writer.writerow([
+            a.id,
+            User.query.get(a.student_id).name,
+            User.query.get(a.advisor_id).name,
+            a.time.strftime('%Y-%m-%d %H:%M'),
+            a.status
+        ])
+
+    response = make_response(output.getvalue())
+    response.headers['Content-Disposition'] = 'attachment; filename=appointments.csv'
+    response.headers['Content-Type'] = 'text/csv'
+    return response
