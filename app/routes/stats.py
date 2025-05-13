@@ -11,6 +11,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, jsonify
 from sqlalchemy import func
 from app.models.appointment import Appointment
+from app.models.waitlist import Waitlist
 
 stats_bp = Blueprint('stats', __name__)
 
@@ -66,6 +67,17 @@ def dashboard():
     from datetime import datetime
     now = datetime.now()
     current_month = now.strftime('%Y-%m')
+  
+    recent_appointments_raw = db.session.query(Appointment).order_by(Appointment.time.desc()).limit(10).all()
+    recent_waitlist = db.session.query(Waitlist).filter_by(status='waiting').order_by(Waitlist.created_at.desc()).limit(10).all()
+    recent_appointments = []
+    for a in recent_appointments_raw:
+        student = User.query.get(a.student_id)
+        recent_appointments.append({
+            "time": a.time,
+            "status": a.status,
+            "student_name": student.name if student else "Unknown"
+        })
 
     monthly_data = db.session.query(
         func.strftime('%Y-%m', Appointment.time).label('month'),
@@ -92,14 +104,17 @@ def dashboard():
     cancel_counts = [15, 8, 5, 12]
 
     return render_template("dashboard.html",
-        months=months,
-        counts=counts,
-        advisor_names=advisor_names,
-        advisor_counts=advisor_counts,
-        total_this_month=total_this_month,
-        total_completed=total_completed,
-        total_noshow=total_noshow,
-        cancel_labels=cancel_labels,
-        cancel_counts=cancel_counts
-    )
+    months=months,
+    counts=counts,
+    advisor_names=advisor_names,
+    advisor_counts=advisor_counts,
+    total_this_month=total_this_month,
+    total_completed=total_completed,
+    total_noshow=total_noshow,
+    cancel_labels=cancel_labels,
+    cancel_counts=cancel_counts,
+    recent_appointments=recent_appointments, 
+    recent_waitlist=recent_waitlist
+)
+
     
