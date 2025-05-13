@@ -52,11 +52,31 @@
   .btn-outline-primary {
     margin-top: 10px;
   }
-  
+
   .hover-shadow:hover {
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   transform: translateY(-2px);
   transition: all 0.2s ease-in-out;
 }
+.student-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out;
+}
+.student-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.icon-box {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  font-size: 24px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 
 </style>
