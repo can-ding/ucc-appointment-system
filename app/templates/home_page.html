@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<div class="container text-center py-5">
+  <h1 class="mb-4">Welcome to the Appointment System</h1>
+  <p class="lead mb-5">Please choose your role to continue</p>
+
+  <div class="d-grid gap-4 col-6 mx-auto">
+    <a href="/waitlist/demo" class="btn btn-outline-primary btn-lg">Student Entrance</a>
+    <a href="/dashboard" class="btn btn-outline-dark btn-lg">Admin Entrance</a>
+  </div>
+</div>
+{% endblock %}
