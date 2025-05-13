@@ -52,4 +52,11 @@
   .btn-outline-primary {
     margin-top: 10px;
   }
+  
+  .hover-shadow:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+  transition: all 0.2s ease-in-out;
+}
+
 </style>

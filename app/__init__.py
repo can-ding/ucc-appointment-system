@@ -7,8 +7,9 @@ from app.routes.appointment import appointment_bp
 from app.routes.stats import stats_bp
 from app.models.waitlist import Waitlist
 from app.routes.waitlist import waitlist_bp
+from app.routes.student import student_bp
 
-blueprints = [main_bp, user_bp, appointment_bp, stats_bp, waitlist_bp]
+blueprints = [main_bp, user_bp, appointment_bp, stats_bp, waitlist_bp, student_bp]
 
 
 def create_app():

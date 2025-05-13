@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My Appointments{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2>My Appointments</h2>
+
+  <h5 class="mt-4">Upcoming</h5>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Advisor</th>
+        <th>Mode</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025-05-15 14:00</td>
+        <td>Dr. Smith</td>
+        <td>In-person</td>
+        <td><button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h5 class="mt-5">History</h5>
+  <table class="table table-sm table-hover">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Advisor</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>2025-04-02</td><td>Prof. Lee</td><td>Completed</td></tr>
+      <tr><td>2025-03-10</td><td>Dr. Zhang</td><td>Cancelled</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
