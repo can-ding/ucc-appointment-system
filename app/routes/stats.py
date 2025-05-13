@@ -87,6 +87,9 @@ def dashboard():
     total_this_month = Appointment.query.filter(func.strftime('%Y-%m', Appointment.time) == current_month).count()
     total_completed = Appointment.query.filter_by(status='completed').count()
     total_noshow = Appointment.query.filter_by(status='no-show').count()
+    
+    cancel_labels = ['Conflict', 'Sick', 'Forgot', 'Other']
+    cancel_counts = [15, 8, 5, 12]
 
     return render_template("dashboard.html",
         months=months,
@@ -95,5 +98,8 @@ def dashboard():
         advisor_counts=advisor_counts,
         total_this_month=total_this_month,
         total_completed=total_completed,
-        total_noshow=total_noshow
+        total_noshow=total_noshow,
+        cancel_labels=cancel_labels,
+        cancel_counts=cancel_counts
     )
+    

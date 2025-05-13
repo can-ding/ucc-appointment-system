@@ -49,11 +49,18 @@
   </div>
 </div>
 
+<!-- Cancellation Reasons Chart -->
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title">Cancellation Reasons</h5>
+    <canvas id="cancelChart" width="400" height="400"></canvas>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // Monthly Chart
   const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-  const advisorCtx = document.getElementById('advisorChart').getContext('2d');
-
   new Chart(monthlyCtx, {
     type: 'bar',
     data: {
@@ -69,6 +76,8 @@
     options: { scales: { y: { beginAtZero: true } } }
   });
 
+  // Advisor Chart
+  const advisorCtx = document.getElementById('advisorChart').getContext('2d');
   new Chart(advisorCtx, {
     type: 'pie',
     data: {
@@ -80,7 +89,21 @@
           '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
         ]
       }]
-    },
+    }
+  });
+
+  // Cancellation Chart
+  const cancelCtx = document.getElementById('cancelChart').getContext('2d');
+  new Chart(cancelCtx, {
+    type: 'doughnut',
+    data: {
+      labels: {{ cancel_labels | tojson }},
+      datasets: [{
+        data: {{ cancel_counts | tojson }},
+        backgroundColor: ['#FF9999', '#99CCFF', '#99FF99', '#FFCC99']
+      }]
+    }
   });
 </script>
+
 {% endblock %}
