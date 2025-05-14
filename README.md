@@ -44,7 +44,7 @@ A lightweight appointment management platform for university career center (UCC)
 ## 🚀 Deployment
 
 Currently live on Render:  
-👉 [Live Demo Link](https://your-site-name.onrender.com) ← *(replace with your actual link)*
+👉 [Live Demo Link](https://ucc-appointment-system.onrender.com) 
 
 > ⚙️ To deploy it yourself:
 > 1. Push to GitHub
